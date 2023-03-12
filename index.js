@@ -6,13 +6,6 @@ const WeatherRecord = require("./db.js");
 app.use(cors());
 app.use(express.static("public"));
 
-// Define homepage
-app.get("/", async (req, res) => {
-  res.json({
-    message: "NOAA API. Query /stations/:stationId to retrieve data",
-  });
-});
-
 // Define API endpoint
 app.get("/station/:id", async (req, res) => {
   const id = req.params.id;
