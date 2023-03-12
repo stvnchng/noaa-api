@@ -63,18 +63,24 @@ const sflag1Map = {
   z: "Uzbekistan update",
 };
 
-const resultCountElement = document.getElementById("result-count");
-
 const form = document.querySelector("form");
+const resultCountElement = document.getElementById("result-count");
+const tbody = document.getElementById("station-data");
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const stationId = document.querySelector("#station-id").value;
+  window.history.pushState(
+    {},
+    "",
+    stationId.trim() !== "" ? `/station/${stationId}` : "/"
+  );
+  tbody.innerHTML = "";
+  resultCountElement.textContent = "";
   if (stationId.trim() === "") return;
   fetch(`/station/${stationId}`)
     .then((response) => response.json())
     .then((data) => {
-      const tbody = document.querySelector("#station-data");
-      tbody.innerHTML = "";
       resultCountElement.textContent = `${data.length} results found for station with ID ${stationId}`;
       if (data.length) {
         resultCountElement.classList.remove("bg-secondary");
