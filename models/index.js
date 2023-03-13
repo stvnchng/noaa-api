@@ -1,11 +1,9 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize("weather", "user", "password", {
-  host: "localhost",
+  host: "db",
+  port: 3306,
   dialect: "mysql",
-  dialectOptions: {
-    connectTimeout: 30000,
-  },
 });
 
 // Define WeatherRecord model
@@ -40,22 +38,6 @@ const WeatherRecord = sequelize.define(
       allowNull: true,
     },
     sflag1: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    value2: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    mflag2: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    qflag2: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    sflag2: {
       type: DataTypes.STRING,
       allowNull: true,
     },

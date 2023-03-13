@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const WeatherRecord = require("./db.js");
+const WeatherRecord = require("./models");
 
 app.use(cors());
 app.use(express.static("public"));
@@ -9,19 +9,9 @@ app.use(express.static("public"));
 // Define API endpoint
 app.get("/station/:id", async (req, res) => {
   const id = req.params.id;
-  const date = req.params.date;
-  const element = req.params.element;
-  let whereClause = { station_id: id };
-  if (date && element) {
-    whereClause = { ...whereClause, date: date, element: element };
-  } else if (date) {
-    whereClause = { ...whereClause, date: date };
-  } else if (element) {
-    whereClause = { ...whereClause, element: element };
-  }
   try {
     const records = await WeatherRecord.findAll({
-      where: whereClause,
+      where: { station_id: id },
     });
     res.send(records);
   } catch (err) {

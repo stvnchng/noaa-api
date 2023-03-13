@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14-alpine
 
 WORKDIR /app
 
@@ -8,11 +8,11 @@ RUN npm install
 
 COPY . .
 
-# Set environment variables for the MySQL/MariaDB database
-ENV MYSQL_HOST=localhost
-ENV MYSQL_USER=user
-ENV MYSQL_PASSWORD=password
-ENV MYSQL_DATABASE=weather
+RUN mkdir /data
+
+COPY data/* /data/
+
+COPY ./models ./models
 
 EXPOSE 3000
 

@@ -66,46 +66,47 @@ const sflag1Map = {
 const form = document.querySelector("form");
 const resultCountElement = document.getElementById("result-count");
 const tbody = document.getElementById("station-data");
+let lastSearch;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const stationId = document.querySelector("#station-id").value;
-  window.history.pushState(
-    {},
-    "",
-    stationId.trim() !== "" ? `/station/${stationId}` : "/"
-  );
-  tbody.innerHTML = "";
-  resultCountElement.textContent = "";
-  if (stationId.trim() === "") return;
-  fetch(`/station/${stationId}`)
-    .then((response) => response.json())
-    .then((data) => {
-      resultCountElement.textContent = `${data.length} results found for station with ID ${stationId}`;
-      if (data.length) {
-        resultCountElement.classList.remove("bg-secondary");
-        console.log(data);
-        data.forEach((record) => {
-          const tr = document.createElement("tr");
-          // <td>${record.station_id}</td>
-          tr.innerHTML = `
-            <td>${record.date}</td>
-            <td>${record.element}</td>
-            <td>${record.value1}</td>
-            <td>${record.mflag1 !== "" ? mflag1Map[record.mflag1] : ""} ${
-            record.qflag1 !== ""
-              ? "<strong>" + qflag1Map[record.qflag1] + "</strong>"
-              : ""
-          }</td>
-            <td>${sflag1Map[record.sflag1]}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } else {
-        resultCountElement.classList.add("bg-secondary");
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching station data:", error);
-    });
+  if (stationId.trim() === "") {
+    resultCountElement.textContent = "";
+    return;
+  }
+  if (lastSearch !== stationId) {
+    tbody.innerHTML = "";
+    lastSearch = stationId;
+    fetch(`/station/${stationId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        resultCountElement.textContent = `${data.length} results found for station with ID ${stationId}`;
+        if (data.length) {
+          resultCountElement.classList.remove("bg-secondary");
+          console.log(data);
+          data.forEach((record) => {
+            const tr = document.createElement("tr");
+            // <td>${record.station_id}</td>
+            tr.innerHTML = `
+              <td>${record.date}</td>
+              <td>${record.element}</td>
+              <td>${record.value1}</td>
+              <td>${record.mflag1 !== "" ? mflag1Map[record.mflag1] : ""} ${
+              record.qflag1 !== ""
+                ? "<strong>" + qflag1Map[record.qflag1] + "</strong>"
+                : ""
+            }</td>
+              <td>${sflag1Map[record.sflag1]}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          resultCountElement.classList.add("bg-secondary");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching station data:", error);
+      });
+  }
 });
